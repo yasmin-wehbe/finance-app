@@ -52,6 +52,11 @@ I tracked my finances in spreadsheets for years and wanted something with the po
 |---|
 |![Scenarios](screenshots/scenarios1.png) |
 
+## Demo
+
+https://github.com/user-attachments/assets/6ec2e507-8ffc-4b63-a824-94c5182ff137
+
+
 ## Tech stack
 
 - **Frontend:** React, Tailwind CSS, Recharts, Heroicons
