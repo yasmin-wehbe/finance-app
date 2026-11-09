@@ -1,70 +1,94 @@
-# Getting Started with Create React App
+# Finances: Personal Finance Desktop App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A privacy-first desktop app for tracking net worth, planning ahead and testing financial scenarios. All data stays on your computer; nothing is sent to the cloud.
 
-## Available Scripts
+![Wealth page](screenshots/wealth.png)
 
-In the project directory, you can run:
+## Why I built it
 
-### `npm start`
+I tracked my finances in spreadsheets for years and wanted something with the polish of a modern fintech app, without handing my financial data to a third-party service. So I designed and built my own, end to end: from Figma mockups to a packaged Windows installer.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+**Wealth tracking**
+- Record net worth snapshots across cash accounts, savings (with interest rate), gold, equity and bond ETFs, receivables and credit card debt
+- Three views: interactive charts, a collapsible balance-sheet table, and a card timeline
+- Charts for stacked asset composition, allocation %, and net worth trend, with 6/12-month ranges and per-category toggles
+- Month-over-month growth, average monthly change, and notes attached to each snapshot
 
-### `npm test`
+**Planning**
+- **Emergency fund:** calculates a target from monthly expenses (housing,
+  living, family support, utilities, car, buffer) and an adjustable 3–12 month
+  risk tolerance, then compares it with available cash from the latest snapshot
+  to show coverage %, surplus or shortfall, and a recommendation.
+- **Forecast:** projects net worth month by month for the current year and
+  annually over five years, from income assumptions (salary, annual raise and
+  its effective month, bonus and its payout month, other income), monthly
+  expenses and inflation. Tracks actual snapshots against the projection,
+  breaks down income vs expenses per month, and supports one-off adjustments.
+- **Scenarios:** compares up to six investment strategies side by side, each
+  with its own allocation across stocks/ETFs, gold and savings and its own
+  expected returns. Given an initial investment, bi-weekly contributions and a
+  time horizon, it shows final value, total gain and ROI, growth over time vs
+  total contributed, and breakeven insights (e.g. when one strategy overtakes
+  another). Includes risk labels and presets.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**Everywhere**
+- App-wide AED / USD currency toggle
+- Free-form notes page
 
-### `npm run build`
+## Screenshots
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+| Emergency Fund | Forecast | Scenarios |
+|---|---|---|
+| ![Emergency Fund](screenshots/emergency_fund.png) | ![Forecast](screenshots/forecast1.png) | ![Scenarios](screenshots/scenarios1.png) |
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Tech stack
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Frontend:** React, Tailwind CSS, Recharts, Heroicons
+- **Desktop:** Electron (packaged with electron-builder)
+- **Backend:** Python (openpyxl) for calculations and storage
 
-### `npm run eject`
+## Architecture
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
+React UI → Electron (IPC via secure preload bridge) → Python engine → local Excel file
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- The React interface never touches the file system directly; it calls a small, explicit API exposed through Electron's `contextBridge` (context isolation on, Node integration off).
+- Electron runs the Python engine as a child process and exchanges JSON with it.
+- Data is stored in the user's app data folder (`%APPDATA%\finance-app`), separate from the program, so reinstalling or updating never touches it.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Installation (Windows)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+1. Download the latest installer from [Releases](../../releases).
+2. Install [Python](https://www.python.org/downloads/), then run:
 
-## Learn More
+```
+pip install openpyxl
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+3. Run the installer. Windows may show a SmartScreen warning because the app isn't code-signed: click **More info → Run anyway**.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Running from source
 
-### Code Splitting
+```
+git clone https://github.com/yasmin-wehbe/finance-app.git
+cd finance-app
+npm install
+pip install openpyxl
+npm run electron-dev
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+To build the installer:
 
-### Analyzing the Bundle Size
+```
+npm run electron-build
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Roadmap
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Credit card statement import (CSV / PDF) with automatic spending categorization
+- Live gold and ETF price fetching
+- Rewards (Marriott Bonvoy points) estimation
+- Data export / backup and optional app password
