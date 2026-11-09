@@ -319,13 +319,14 @@ function Wealth() {
     };
 
     const handleDeleteClick = async (date) => {
-        if (window.confirm(`Are you sure you want to delete the snapshot for ${date}?`)) {
-            const result = await window.electronAPI.deleteSnapshot(date);
-            if (result.status === 'success') {
-                refreshData();
-            } else {
-                alert("Error deleting snapshot");
-            }
+        const ok = await window.electronAPI.confirm(`Are you sure you want to delete the snapshot for ${date}?`);
+        if (!ok) return;
+
+        const result = await window.electronAPI.deleteSnapshot(date);
+        if (result.status === 'success') {
+            refreshData();
+        } else {
+            alert("Error deleting snapshot");
         }
     };
 

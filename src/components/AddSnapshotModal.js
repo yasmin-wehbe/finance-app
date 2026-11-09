@@ -51,7 +51,7 @@ const AddSnapshotModal = ({ onSaveSuccess, initialData = null, isOpen, setIsOpen
       comment: '',
       ...initialData   // Edit or latest snapshot overrides; null adds nothing
     });
-  }, [initialData, isOpen]);
+  }, [isOpen]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

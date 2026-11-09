@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 
@@ -33,7 +33,20 @@ function createWindow() {
 );  
 }
 
-const { dialog } = require('electron');
+
+ipcMain.handle('confirm', async (event, message) => {
+  const result = await dialog.showMessageBox({
+    type: 'none',                 // removes the blue "i" icon
+    title: 'Delete snapshot',     // instead of "finance-app"
+    buttons: ['Delete', 'Cancel'],
+    defaultId: 1,                 // Cancel is the safe default
+    cancelId: 1,
+    noLink: true,                 // normal buttons instead of the big "→ Delete" link
+    message: 'Delete this snapshot?',
+    detail: message,
+  });
+  return result.response === 0;
+});
 
 // File selection dialog
 ipcMain.handle('select-file', async () => {

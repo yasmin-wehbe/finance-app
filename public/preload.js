@@ -10,4 +10,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   deleteSnapshot: (date) => ipcRenderer.invoke('delete-snapshot', date), // delete
   readNotes: () => ipcRenderer.invoke('read-notes'), // notes
   saveNotes: (content) => ipcRenderer.invoke('save-notes', content), // notes
+  confirm: (message) => ipcRenderer.invoke('confirm', message),
 });
