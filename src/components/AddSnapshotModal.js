@@ -23,7 +23,7 @@ const FormInput = ({ label, name, value, onChange, isRed = false }) => (
 
 const AddSnapshotModal = ({ onSaveSuccess, initialData = null, isOpen, setIsOpen }) => {
   const [formData, setFormData] = useState({
-    date: new Date().toISOString().split('T')[0],
+    date: new Date().toLocaleDateString('en-CA').split('T')[0],
     cash_savings: 0, savings_rate: 0,
     cash_current: 0, cash_current_2: 0, cash_current_3: 0, 
     cash_ibkr: 0, cash_hand: 0, 
@@ -38,24 +38,19 @@ const AddSnapshotModal = ({ onSaveSuccess, initialData = null, isOpen, setIsOpen
 
   // When initialData changes (e.g. user clicks Edit), update the form
   React.useEffect(() => {
-    if (initialData) {
-      setFormData(initialData);
-    } else {
-      // Reset for "Add New"
-      setFormData({
-        date: new Date().toISOString().split('T')[0],
-        cash_savings: 0, savings_rate: 0,
-        cash_current: 0, cash_current_2: 0, cash_current_3: 0, 
-        cash_ibkr: 0, cash_hand: 0, 
-        gold_weight: 0, gold_price: 0,
-        sp500_shares: 0, sp500_price: 0, 
-        global_shares: 0, global_price: 0,
-        bond_shares:0, bond_price: 0,
-        receivables: 0, credit_card: 0,
-        net_worth: 0,
-        comment: ''
-      });
-    }
+    setFormData({
+      date: new Date().toLocaleDateString('en-CA'),
+      cash_savings: 0, savings_rate: 0,
+      cash_current: 0, cash_current_2: 0, cash_current_3: 0,
+      cash_ibkr: 0, cash_hand: 0,
+      gold_weight: 0, gold_price: 0,
+      sp500_shares: 0, sp500_price: 0,
+      global_shares: 0, global_price: 0,
+      bond_shares: 0, bond_price: 0,
+      receivables: 0, credit_card: 0,
+      comment: '',
+      ...initialData   // Edit or latest snapshot overrides; null adds nothing
+    });
   }, [initialData, isOpen]);
 
   const handleChange = (e) => {
@@ -85,13 +80,21 @@ const AddSnapshotModal = ({ onSaveSuccess, initialData = null, isOpen, setIsOpen
         if (key !== 'date' && key !== 'comment') submissionData[key] = parseFloat(submissionData[key]) || 0;
     });
 
-    const result = await window.electronAPI.addSnapshot(submissionData);
-    if (result.status === 'success') {
-      setIsOpen(false);
-      onSaveSuccess(); 
+    try {
+      const result = await window.electronAPI.addSnapshot(submissionData);
+      if (result.status === 'success') {
+        setIsOpen(false);
+        onSaveSuccess();
+      } else {
+        alert(`Save failed: ${result.message}`);
+      }
+    } catch (err) {
+      alert(`Save failed: ${err}`);
     }
+    
   };
 
+  
   // Fixed: Removed 'uppercase' and 'tracking-wider', adjusted font weight
   const SectionHeader = ({ title }) => (
     <div className="flex items-center gap-3 mt-8 mb-2">
