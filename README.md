@@ -7,7 +7,6 @@ A privacy-first desktop app for tracking net worth, planning ahead and testing f
 ## Why I built it
 
 I tracked my finances in spreadsheets for years and wanted something with the polish of a modern fintech app, without handing my financial data to a third-party service. So I designed and built my own, end to end: from Figma mockups to a packaged Windows installer.
-
 ## Features
 
 **Wealth tracking**
@@ -39,9 +38,19 @@ I tracked my finances in spreadsheets for years and wanted something with the po
 
 ## Screenshots
 
-| Emergency Fund | Forecast | Scenarios |
-|---|---|---|
-| ![Emergency Fund](screenshots/emergency_fund.png) | ![Forecast](screenshots/forecast1.png) | ![Scenarios](screenshots/scenarios1.png) |
+| Emergency Fund |
+|---|
+| ![Emergency Fund](screenshots/emergency_fund.png) | 
+
+
+
+| Wealth Forecast |
+|---|
+| ![Forecast](screenshots/forecast1.png) | 
+
+| Investment Scenario Analysis |
+|---|
+|![Scenarios](screenshots/scenarios1.png) |
 
 ## Tech stack
 
